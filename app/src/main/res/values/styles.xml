@@ -1,0 +1,12 @@
+<resources>
+    <!-- App theme -->
+    <style name="Theme.SafetyApp" parent="Theme.Material3.DayNight.NoActionBar">
+        <!-- Customize your theme colors here -->
+    </style>
+
+    <!-- Circular Shape for profile picture -->
+    <style name="CircleImageView" parent="">
+        <item name="cornerFamily">rounded</item>
+        <item name="cornerSize">50%</item>
+    </style>
+</resources>

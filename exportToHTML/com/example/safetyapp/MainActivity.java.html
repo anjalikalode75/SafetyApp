@@ -1,0 +1,268 @@
+<html>
+<head>
+<title>MainActivity.java</title>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8">
+<style type="text/css">
+.s0 { color: #cf8e6d;}
+.s1 { color: #bcbec4;}
+.s2 { color: #bcbec4;}
+.s3 { color: #7a7e85;}
+.s4 { color: #6aab73;}
+.s5 { color: #2aacb8;}
+</style>
+</head>
+<body bgcolor="#1e1f22">
+<table CELLSPACING=0 CELLPADDING=5 COLS=1 WIDTH="100%" BGCOLOR="#606060" >
+<tr><td><center>
+<font face="Arial, Helvetica" color="#000000">
+MainActivity.java</font>
+</center></td></tr></table>
+<pre><span class="s0">package </span><span class="s1">com</span><span class="s2">.</span><span class="s1">example</span><span class="s2">.</span><span class="s1">safetyapp</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">Manifest</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">SharedPreferences</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">pm</span><span class="s2">.</span><span class="s1">PackageManager</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">media</span><span class="s2">.</span><span class="s1">MediaPlayer</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">os</span><span class="s2">.</span><span class="s1">Bundle</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">telephony</span><span class="s2">.</span><span class="s1">SmsManager</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Button</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">EditText</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">android</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">Toast</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">result</span><span class="s2">.</span><span class="s1">ActivityResultLauncher</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">activity</span><span class="s2">.</span><span class="s1">result</span><span class="s2">.</span><span class="s1">contract</span><span class="s2">.</span><span class="s1">ActivityResultContracts</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">NonNull</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">annotation</span><span class="s2">.</span><span class="s1">RequiresPermission</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">appcompat</span><span class="s2">.</span><span class="s1">app</span><span class="s2">.</span><span class="s1">AppCompatActivity</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">core</span><span class="s2">.</span><span class="s1">content</span><span class="s2">.</span><span class="s1">ContextCompat</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">ItemTouchHelper</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">LinearLayoutManager</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">androidx</span><span class="s2">.</span><span class="s1">recyclerview</span><span class="s2">.</span><span class="s1">widget</span><span class="s2">.</span><span class="s1">RecyclerView</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">android</span><span class="s2">.</span><span class="s1">gms</span><span class="s2">.</span><span class="s1">location</span><span class="s2">.</span><span class="s1">FusedLocationProviderClient</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">com</span><span class="s2">.</span><span class="s1">google</span><span class="s2">.</span><span class="s1">android</span><span class="s2">.</span><span class="s1">gms</span><span class="s2">.</span><span class="s1">location</span><span class="s2">.</span><span class="s1">LocationServices</span><span class="s2">;</span>
+
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">ArrayList</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">List</span><span class="s2">;</span>
+<span class="s0">import </span><span class="s1">java</span><span class="s2">.</span><span class="s1">util</span><span class="s2">.</span><span class="s1">Map</span><span class="s2">;</span>
+
+<span class="s0">public class </span><span class="s1">MainActivity </span><span class="s0">extends </span><span class="s1">AppCompatActivity </span><span class="s2">{</span>
+
+    <span class="s0">private </span><span class="s1">EditText etContact</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">Button btnSaveContact</span><span class="s2">, </span><span class="s1">btnSOS</span><span class="s2">, </span><span class="s1">btnSiren</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">RecyclerView recyclerContacts</span><span class="s2">;</span>
+
+    <span class="s0">private </span><span class="s1">SharedPreferences sharedPreferences</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">MediaPlayer mediaPlayer</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">FusedLocationProviderClient fusedLocationClient</span><span class="s2">;</span>
+
+    <span class="s0">private </span><span class="s1">List</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">&gt; </span><span class="s1">contactList</span><span class="s2">;</span>
+    <span class="s0">private </span><span class="s1">ContactAdapter adapter</span><span class="s2">;</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">Bundle savedInstanceState</span><span class="s2">) {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onCreate</span><span class="s2">(</span><span class="s1">savedInstanceState</span><span class="s2">);</span>
+        <span class="s1">setContentView</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">layout</span><span class="s2">.</span><span class="s1">activity_main</span><span class="s2">);</span>
+
+        <span class="s3">// INIT VIEWS</span>
+        <span class="s1">etContact </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">etContact</span><span class="s2">);</span>
+        <span class="s1">btnSaveContact </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btnSaveContact</span><span class="s2">);</span>
+        <span class="s1">btnSOS </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btnSOS</span><span class="s2">);</span>
+        <span class="s1">btnSiren </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">btnSiren</span><span class="s2">);</span>
+        <span class="s1">recyclerContacts </span><span class="s2">= </span><span class="s1">findViewById</span><span class="s2">(</span><span class="s1">R</span><span class="s2">.</span><span class="s1">id</span><span class="s2">.</span><span class="s1">recyclerContacts</span><span class="s2">);</span>
+
+        <span class="s1">sharedPreferences </span><span class="s2">= </span><span class="s1">getSharedPreferences</span><span class="s2">(</span><span class="s4">&quot;SafetyApp&quot;</span><span class="s2">, </span><span class="s1">MODE_PRIVATE</span><span class="s2">);</span>
+        <span class="s1">fusedLocationClient </span><span class="s2">= </span><span class="s1">LocationServices</span><span class="s2">.</span><span class="s1">getFusedLocationProviderClient</span><span class="s2">(</span><span class="s0">this</span><span class="s2">);</span>
+
+        <span class="s3">// INIT LIST</span>
+        <span class="s1">contactList </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ArrayList</span><span class="s2">&lt;&gt;();</span>
+        <span class="s1">recyclerContacts</span><span class="s2">.</span><span class="s1">setLayoutManager</span><span class="s2">(</span><span class="s0">new </span><span class="s1">LinearLayoutManager</span><span class="s2">(</span><span class="s0">this</span><span class="s2">));</span>
+        <span class="s1">adapter </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ContactAdapter</span><span class="s2">(</span><span class="s1">contactList</span><span class="s2">, </span><span class="s0">this</span><span class="s2">);</span>
+        <span class="s1">recyclerContacts</span><span class="s2">.</span><span class="s1">setAdapter</span><span class="s2">(</span><span class="s1">adapter</span><span class="s2">);</span>
+
+        <span class="s1">loadContacts</span><span class="s2">();</span>
+
+        <span class="s3">// BUTTONS</span>
+        <span class="s1">btnSaveContact</span><span class="s2">.</span><span class="s1">setOnClickListener</span><span class="s2">(</span><span class="s1">v -&gt; saveContact</span><span class="s2">());</span>
+        <span class="s1">btnSOS</span><span class="s2">.</span><span class="s1">setOnClickListener</span><span class="s2">(</span><span class="s1">v -&gt; checkPermissionsAndSend</span><span class="s2">());</span>
+        <span class="s1">btnSiren</span><span class="s2">.</span><span class="s1">setOnClickListener</span><span class="s2">(</span><span class="s1">v -&gt; toggleSiren</span><span class="s2">());</span>
+
+        <span class="s3">// SWIPE TO DELETE</span>
+        <span class="s1">ItemTouchHelper</span><span class="s2">.</span><span class="s1">SimpleCallback simpleCallback </span><span class="s2">= </span><span class="s0">new </span><span class="s1">ItemTouchHelper</span><span class="s2">.</span><span class="s1">SimpleCallback</span><span class="s2">(</span><span class="s5">0</span><span class="s2">,</span>
+                <span class="s1">ItemTouchHelper</span><span class="s2">.</span><span class="s1">LEFT </span><span class="s2">| </span><span class="s1">ItemTouchHelper</span><span class="s2">.</span><span class="s1">RIGHT</span><span class="s2">) {</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public boolean </span><span class="s1">onMove</span><span class="s2">(</span><span class="s1">@NonNull RecyclerView recyclerView</span><span class="s2">,</span>
+                                  <span class="s1">@NonNull RecyclerView</span><span class="s2">.</span><span class="s1">ViewHolder viewHolder</span><span class="s2">,</span>
+                                  <span class="s1">@NonNull RecyclerView</span><span class="s2">.</span><span class="s1">ViewHolder target</span><span class="s2">) {</span>
+                <span class="s0">return false</span><span class="s2">; </span><span class="s3">// we don’t support drag &amp; drop</span>
+            <span class="s2">}</span>
+
+            <span class="s1">@Override</span>
+            <span class="s0">public void </span><span class="s1">onSwiped</span><span class="s2">(</span><span class="s1">@NonNull RecyclerView</span><span class="s2">.</span><span class="s1">ViewHolder viewHolder</span><span class="s2">, </span><span class="s0">int </span><span class="s1">direction</span><span class="s2">) {</span>
+                <span class="s0">int </span><span class="s1">position </span><span class="s2">= </span><span class="s1">viewHolder</span><span class="s2">.</span><span class="s1">getAdapterPosition</span><span class="s2">();</span>
+                <span class="s1">String removedContact </span><span class="s2">= </span><span class="s1">contactList</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">position</span><span class="s2">);</span>
+
+                <span class="s3">// Remove from list</span>
+                <span class="s1">contactList</span><span class="s2">.</span><span class="s1">remove</span><span class="s2">(</span><span class="s1">position</span><span class="s2">);</span>
+                <span class="s1">adapter</span><span class="s2">.</span><span class="s1">notifyItemRemoved</span><span class="s2">(</span><span class="s1">position</span><span class="s2">);</span>
+
+                <span class="s3">// Update SharedPreferences</span>
+                <span class="s1">updateSharedPreferences</span><span class="s2">();</span>
+
+                <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s1">MainActivity</span><span class="s2">.</span><span class="s0">this</span><span class="s2">,</span>
+                        <span class="s4">&quot;Contact Deleted: &quot; </span><span class="s2">+ </span><span class="s1">removedContact</span><span class="s2">,</span>
+                        <span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+            <span class="s2">}</span>
+        <span class="s2">};</span>
+
+        <span class="s0">new </span><span class="s1">ItemTouchHelper</span><span class="s2">(</span><span class="s1">simpleCallback</span><span class="s2">).</span><span class="s1">attachToRecyclerView</span><span class="s2">(</span><span class="s1">recyclerContacts</span><span class="s2">);</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// SAVE CONTACT</span>
+    <span class="s0">private void </span><span class="s1">saveContact</span><span class="s2">() {</span>
+        <span class="s1">String newNumber </span><span class="s2">= </span><span class="s1">etContact</span><span class="s2">.</span><span class="s1">getText</span><span class="s2">().</span><span class="s1">toString</span><span class="s2">().</span><span class="s1">trim</span><span class="s2">();</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">newNumber</span><span class="s2">.</span><span class="s1">length</span><span class="s2">() &lt; </span><span class="s5">10</span><span class="s2">) {</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Enter valid phone number&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+            <span class="s0">return</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">contactList</span><span class="s2">.</span><span class="s1">contains</span><span class="s2">(</span><span class="s1">newNumber</span><span class="s2">)) {</span>
+            <span class="s1">contactList</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">newNumber</span><span class="s2">);</span>
+            <span class="s1">adapter</span><span class="s2">.</span><span class="s1">notifyItemInserted</span><span class="s2">(</span><span class="s1">contactList</span><span class="s2">.</span><span class="s1">size</span><span class="s2">() - </span><span class="s5">1</span><span class="s2">);</span>
+            <span class="s1">etContact</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s4">&quot;&quot;</span><span class="s2">);</span>
+
+            <span class="s1">updateSharedPreferences</span><span class="s2">();</span>
+
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Contact Saved&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Contact Already Exists&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// LOAD CONTACTS</span>
+    <span class="s0">private void </span><span class="s1">loadContacts</span><span class="s2">() {</span>
+        <span class="s1">contactList</span><span class="s2">.</span><span class="s1">clear</span><span class="s2">();</span>
+        <span class="s1">String contacts </span><span class="s2">= </span><span class="s1">sharedPreferences</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s4">&quot;trusted_contacts&quot;</span><span class="s2">, </span><span class="s4">&quot;&quot;</span><span class="s2">);</span>
+        <span class="s0">if </span><span class="s2">(!</span><span class="s1">contacts</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+            <span class="s1">String</span><span class="s2">[] </span><span class="s1">numbers </span><span class="s2">= </span><span class="s1">contacts</span><span class="s2">.</span><span class="s1">split</span><span class="s2">(</span><span class="s4">&quot;,&quot;</span><span class="s2">);</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">String number </span><span class="s2">: </span><span class="s1">numbers</span><span class="s2">) {</span>
+                <span class="s1">contactList</span><span class="s2">.</span><span class="s1">add</span><span class="s2">(</span><span class="s1">number</span><span class="s2">.</span><span class="s1">trim</span><span class="s2">());</span>
+            <span class="s2">}</span>
+        <span class="s2">}</span>
+        <span class="s1">adapter</span><span class="s2">.</span><span class="s1">notifyDataSetChanged</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// UPDATE SHARED PREFERENCES</span>
+    <span class="s0">private void </span><span class="s1">updateSharedPreferences</span><span class="s2">() {</span>
+        <span class="s1">StringBuilder builder </span><span class="s2">= </span><span class="s0">new </span><span class="s1">StringBuilder</span><span class="s2">();</span>
+        <span class="s0">for </span><span class="s2">(</span><span class="s0">int </span><span class="s1">i </span><span class="s2">= </span><span class="s5">0</span><span class="s2">; </span><span class="s1">i </span><span class="s2">&lt; </span><span class="s1">contactList</span><span class="s2">.</span><span class="s1">size</span><span class="s2">(); </span><span class="s1">i</span><span class="s2">++) {</span>
+            <span class="s1">builder</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s1">contactList</span><span class="s2">.</span><span class="s1">get</span><span class="s2">(</span><span class="s1">i</span><span class="s2">));</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">i </span><span class="s2">!= </span><span class="s1">contactList</span><span class="s2">.</span><span class="s1">size</span><span class="s2">() - </span><span class="s5">1</span><span class="s2">) </span><span class="s1">builder</span><span class="s2">.</span><span class="s1">append</span><span class="s2">(</span><span class="s4">&quot;,&quot;</span><span class="s2">);</span>
+        <span class="s2">}</span>
+        <span class="s1">sharedPreferences</span><span class="s2">.</span><span class="s1">edit</span><span class="s2">().</span><span class="s1">putString</span><span class="s2">(</span><span class="s4">&quot;trusted_contacts&quot;</span><span class="s2">, </span><span class="s1">builder</span><span class="s2">.</span><span class="s1">toString</span><span class="s2">()).</span><span class="s1">apply</span><span class="s2">();</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// CHECK PERMISSIONS</span>
+    <span class="s0">private void </span><span class="s1">checkPermissionsAndSend</span><span class="s2">() {</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">ContextCompat</span><span class="s2">.</span><span class="s1">checkSelfPermission</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">SEND_SMS</span><span class="s2">) == </span><span class="s1">PackageManager</span><span class="s2">.</span><span class="s1">PERMISSION_GRANTED </span><span class="s2">&amp;&amp;</span>
+                <span class="s1">ContextCompat</span><span class="s2">.</span><span class="s1">checkSelfPermission</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">ACCESS_FINE_LOCATION</span><span class="s2">) == </span><span class="s1">PackageManager</span><span class="s2">.</span><span class="s1">PERMISSION_GRANTED</span><span class="s2">) {</span>
+            <span class="s1">sendSOS</span><span class="s2">();</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">permissionLauncher</span><span class="s2">.</span><span class="s1">launch</span><span class="s2">(</span><span class="s0">new </span><span class="s1">String</span><span class="s2">[]{</span><span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">SEND_SMS</span><span class="s2">,</span>
+                    <span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">ACCESS_FINE_LOCATION</span><span class="s2">});</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private final </span><span class="s1">ActivityResultLauncher</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">[]&gt; </span><span class="s1">permissionLauncher </span><span class="s2">=</span>
+            <span class="s1">registerForActivityResult</span><span class="s2">(</span>
+                    <span class="s0">new </span><span class="s1">ActivityResultContracts</span><span class="s2">.</span><span class="s1">RequestMultiplePermissions</span><span class="s2">(),</span>
+                    <span class="s0">this</span><span class="s1">::handlePermissionResult</span><span class="s2">);</span>
+
+    <span class="s0">private void </span><span class="s1">handlePermissionResult</span><span class="s2">(</span><span class="s1">@NonNull Map</span><span class="s2">&lt;</span><span class="s1">String</span><span class="s2">, </span><span class="s1">Boolean</span><span class="s2">&gt; </span><span class="s1">result</span><span class="s2">) {</span>
+        <span class="s1">Boolean smsGranted </span><span class="s2">= </span><span class="s1">result</span><span class="s2">.</span><span class="s1">getOrDefault</span><span class="s2">(</span><span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">SEND_SMS</span><span class="s2">, </span><span class="s0">false</span><span class="s2">);</span>
+        <span class="s1">Boolean locationGranted </span><span class="s2">= </span><span class="s1">result</span><span class="s2">.</span><span class="s1">getOrDefault</span><span class="s2">(</span><span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">ACCESS_FINE_LOCATION</span><span class="s2">, </span><span class="s0">false</span><span class="s2">);</span>
+
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">smsGranted </span><span class="s2">&amp;&amp; </span><span class="s1">locationGranted</span><span class="s2">) {</span>
+            <span class="s1">sendSOS</span><span class="s2">();</span>
+        <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Permissions Required!&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// SEND SOS</span>
+    <span class="s1">@RequiresPermission</span><span class="s2">(</span><span class="s1">allOf </span><span class="s2">= {</span><span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">ACCESS_FINE_LOCATION</span><span class="s2">, </span><span class="s1">Manifest</span><span class="s2">.</span><span class="s1">permission</span><span class="s2">.</span><span class="s1">ACCESS_COARSE_LOCATION</span><span class="s2">})</span>
+    <span class="s0">private void </span><span class="s1">sendSOS</span><span class="s2">() {</span>
+        <span class="s1">String contacts </span><span class="s2">= </span><span class="s1">sharedPreferences</span><span class="s2">.</span><span class="s1">getString</span><span class="s2">(</span><span class="s4">&quot;trusted_contacts&quot;</span><span class="s2">, </span><span class="s4">&quot;&quot;</span><span class="s2">);</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">contacts</span><span class="s2">.</span><span class="s1">isEmpty</span><span class="s2">()) {</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;No Trusted Contacts Found&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+            <span class="s0">return</span><span class="s2">;</span>
+        <span class="s2">}</span>
+
+        <span class="s1">fusedLocationClient</span><span class="s2">.</span><span class="s1">getLastLocation</span><span class="s2">().</span><span class="s1">addOnSuccessListener</span><span class="s2">(</span><span class="s1">location -&gt; </span><span class="s2">{</span>
+            <span class="s0">double </span><span class="s1">latitude </span><span class="s2">= </span><span class="s5">0.0</span><span class="s2">;</span>
+            <span class="s0">double </span><span class="s1">longitude </span><span class="s2">= </span><span class="s5">0.0</span><span class="s2">;</span>
+
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">location </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s1">latitude </span><span class="s2">= </span><span class="s1">location</span><span class="s2">.</span><span class="s1">getLatitude</span><span class="s2">();</span>
+                <span class="s1">longitude </span><span class="s2">= </span><span class="s1">location</span><span class="s2">.</span><span class="s1">getLongitude</span><span class="s2">();</span>
+            <span class="s2">}</span>
+
+            <span class="s1">String message </span><span class="s2">= </span><span class="s4">&quot;🚨 EMERGENCY ALERT 🚨</span><span class="s0">\n</span><span class="s4">&quot; </span><span class="s2">+</span>
+                    <span class="s4">&quot;I need immediate help.</span><span class="s0">\n</span><span class="s4">&quot; </span><span class="s2">+</span>
+                    <span class="s4">&quot;My Location:</span><span class="s0">\n</span><span class="s4">&quot; </span><span class="s2">+</span>
+                    <span class="s4">&quot;https://www.google.com/maps?q=&quot; </span><span class="s2">+ </span><span class="s1">latitude </span><span class="s2">+ </span><span class="s4">&quot;,&quot; </span><span class="s2">+ </span><span class="s1">longitude</span><span class="s2">;</span>
+
+            <span class="s1">sendSMS</span><span class="s2">(</span><span class="s1">contacts</span><span class="s2">, </span><span class="s1">message</span><span class="s2">);</span>
+        <span class="s2">});</span>
+    <span class="s2">}</span>
+
+    <span class="s0">private void </span><span class="s1">sendSMS</span><span class="s2">(</span><span class="s1">String contacts</span><span class="s2">, </span><span class="s1">String message</span><span class="s2">) {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s1">SmsManager smsManager </span><span class="s2">= </span><span class="s1">SmsManager</span><span class="s2">.</span><span class="s1">getDefault</span><span class="s2">();</span>
+            <span class="s1">String</span><span class="s2">[] </span><span class="s1">numbers </span><span class="s2">= </span><span class="s1">contacts</span><span class="s2">.</span><span class="s1">split</span><span class="s2">(</span><span class="s4">&quot;,&quot;</span><span class="s2">);</span>
+            <span class="s0">for </span><span class="s2">(</span><span class="s1">String number </span><span class="s2">: </span><span class="s1">numbers</span><span class="s2">) {</span>
+                <span class="s1">smsManager</span><span class="s2">.</span><span class="s1">sendMultipartTextMessage</span><span class="s2">(</span><span class="s1">number</span><span class="s2">.</span><span class="s1">trim</span><span class="s2">(), </span><span class="s0">null</span><span class="s2">,</span>
+                        <span class="s1">smsManager</span><span class="s2">.</span><span class="s1">divideMessage</span><span class="s2">(</span><span class="s1">message</span><span class="s2">), </span><span class="s0">null</span><span class="s2">, </span><span class="s0">null</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;SOS Sent Successfully!&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+        <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">Exception e</span><span class="s2">) {</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;SMS Failed: &quot; </span><span class="s2">+ </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getMessage</span><span class="s2">(), </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s3">// SIREN</span>
+    <span class="s0">private void </span><span class="s1">toggleSiren</span><span class="s2">() {</span>
+        <span class="s0">try </span><span class="s2">{</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">mediaPlayer </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+                <span class="s1">mediaPlayer </span><span class="s2">= </span><span class="s1">MediaPlayer</span><span class="s2">.</span><span class="s1">create</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s1">R</span><span class="s2">.</span><span class="s1">raw</span><span class="s2">.</span><span class="s1">siren</span><span class="s2">);</span>
+                <span class="s0">if </span><span class="s2">(</span><span class="s1">mediaPlayer </span><span class="s2">== </span><span class="s0">null</span><span class="s2">) {</span>
+                    <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Add siren.mp3 in res/raw&quot;</span><span class="s2">, </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_SHORT</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+                    <span class="s0">return</span><span class="s2">;</span>
+                <span class="s2">}</span>
+                <span class="s1">mediaPlayer</span><span class="s2">.</span><span class="s1">setLooping</span><span class="s2">(</span><span class="s0">true</span><span class="s2">);</span>
+            <span class="s2">}</span>
+            <span class="s0">if </span><span class="s2">(</span><span class="s1">mediaPlayer</span><span class="s2">.</span><span class="s1">isPlaying</span><span class="s2">()) {</span>
+                <span class="s1">mediaPlayer</span><span class="s2">.</span><span class="s1">pause</span><span class="s2">();</span>
+                <span class="s1">btnSiren</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s4">&quot;🔊 Start Siren&quot;</span><span class="s2">);</span>
+            <span class="s2">} </span><span class="s0">else </span><span class="s2">{</span>
+                <span class="s1">mediaPlayer</span><span class="s2">.</span><span class="s1">start</span><span class="s2">();</span>
+                <span class="s1">btnSiren</span><span class="s2">.</span><span class="s1">setText</span><span class="s2">(</span><span class="s4">&quot;⛔ Stop Siren&quot;</span><span class="s2">);</span>
+            <span class="s2">}</span>
+        <span class="s2">} </span><span class="s0">catch </span><span class="s2">(</span><span class="s1">Exception e</span><span class="s2">) {</span>
+            <span class="s1">Toast</span><span class="s2">.</span><span class="s1">makeText</span><span class="s2">(</span><span class="s0">this</span><span class="s2">, </span><span class="s4">&quot;Siren Error: &quot; </span><span class="s2">+ </span><span class="s1">e</span><span class="s2">.</span><span class="s1">getMessage</span><span class="s2">(), </span><span class="s1">Toast</span><span class="s2">.</span><span class="s1">LENGTH_LONG</span><span class="s2">).</span><span class="s1">show</span><span class="s2">();</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+
+    <span class="s1">@Override</span>
+    <span class="s0">protected void </span><span class="s1">onDestroy</span><span class="s2">() {</span>
+        <span class="s0">super</span><span class="s2">.</span><span class="s1">onDestroy</span><span class="s2">();</span>
+        <span class="s0">if </span><span class="s2">(</span><span class="s1">mediaPlayer </span><span class="s2">!= </span><span class="s0">null</span><span class="s2">) {</span>
+            <span class="s1">mediaPlayer</span><span class="s2">.</span><span class="s1">release</span><span class="s2">();</span>
+            <span class="s1">mediaPlayer </span><span class="s2">= </span><span class="s0">null</span><span class="s2">;</span>
+        <span class="s2">}</span>
+    <span class="s2">}</span>
+<span class="s2">}</span></pre>
+</body>
+</html>

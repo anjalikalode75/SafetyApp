@@ -11,43 +11,45 @@ import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
 
+// Adapter to show only trusted phone numbers
 public class ContactAdapter extends RecyclerView.Adapter<ContactAdapter.ViewHolder> {
 
-    private List<String> contactList;
+    private List<ContactModel> contactList;
     private Context context;
 
-    public ContactAdapter(List<String> contactList, Context context) {
-        this.contactList = contactList;
+    // Constructor
+    public ContactAdapter(Context context, List<ContactModel> contactList) {
         this.context = context;
+        this.contactList = contactList;
+    }
+
+    // ViewHolder class
+    public static class ViewHolder extends RecyclerView.ViewHolder {
+        TextView tvContactNumber;
+
+        public ViewHolder(View itemView) {
+            super(itemView);
+            tvContactNumber = itemView.findViewById(R.id.tvContactNumber);
+        }
     }
 
     @NonNull
     @Override
-    public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-
-        View view = LayoutInflater.from(context)
-                .inflate(android.R.layout.simple_list_item_1, parent, false);
-
+    public ContactAdapter.ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
+        // Use the new item layout for better contrast and rounded background
+        View view = LayoutInflater.from(context).inflate(R.layout.item_trusted_contact, parent, false);
         return new ViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(@NonNull ViewHolder holder, int position) {
-        holder.textView.setText(contactList.get(position));
+    public void onBindViewHolder(@NonNull ContactAdapter.ViewHolder holder, int position) {
+        ContactModel contact = contactList.get(position);
+        // Show only the phone number
+        holder.tvContactNumber.setText(contact.getPhone());
     }
 
     @Override
     public int getItemCount() {
         return contactList.size();
-    }
-
-    public static class ViewHolder extends RecyclerView.ViewHolder {
-
-        TextView textView;
-
-        public ViewHolder(@NonNull View itemView) {
-            super(itemView);
-            textView = itemView.findViewById(android.R.id.text1);
-        }
     }
 }
