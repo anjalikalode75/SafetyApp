@@ -27,8 +27,8 @@ public class RegistrationActivity extends AppCompatActivity {
         btnRegister = findViewById(R.id.btnRegister);
         tvLoginLink = findViewById(R.id.tvLoginLink);
 
-        // Register button click
         btnRegister.setOnClickListener(v -> {
+
             String name = etName.getText().toString().trim();
             String email = etEmail.getText().toString().trim();
             String password = etPassword.getText().toString().trim();
@@ -38,21 +38,21 @@ public class RegistrationActivity extends AppCompatActivity {
                 return;
             }
 
-            // Save username and password in SharedPreferences
+            // Save user credentials
             SharedPreferences prefs = getSharedPreferences("UserPrefs", MODE_PRIVATE);
             SharedPreferences.Editor editor = prefs.edit();
-            editor.putString(name, password);  // key=username, value=password
+
+            editor.putString(name, password);        // username -> password
+            editor.putString(name + "_email", email); // username_email -> email
+
             editor.apply();
 
             Toast.makeText(RegistrationActivity.this, "Registration Successful", Toast.LENGTH_SHORT).show();
 
-            // Go to LoginActivity
-            Intent intent = new Intent(RegistrationActivity.this, LoginActivity.class);
-            startActivity(intent);
+            startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
             finish();
         });
 
-        // Click "Login" link to go to LoginActivity
         tvLoginLink.setOnClickListener(v -> {
             startActivity(new Intent(RegistrationActivity.this, LoginActivity.class));
             finish();

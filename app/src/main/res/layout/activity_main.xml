@@ -93,7 +93,7 @@
                         android:text="Add Trusted Contact"
                         android:textStyle="bold"
                         android:textSize="18sp"
-                        android:textColor="#333333"
+                        android:textColor="#F4E5E5"
                         android:layout_marginBottom="14dp" />
 
                     <EditText

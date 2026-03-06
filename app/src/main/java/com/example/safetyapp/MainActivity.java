@@ -7,6 +7,8 @@ import android.content.pm.PackageManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.telephony.SmsManager;
+import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
@@ -35,7 +37,7 @@ public class MainActivity extends AppCompatActivity {
     private TextView tvWelcome;
     private EditText etContact;
     private Button btnSaveContact, btnSOS, btnSiren;
-    private LinearLayout profileContainer;   // ✅ changed
+    private LinearLayout profileContainer;
     private RecyclerView recyclerContacts;
 
     private SharedPreferences sharedPreferences;
@@ -50,13 +52,12 @@ public class MainActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // INIT VIEWS
         tvWelcome = findViewById(R.id.tvWelcome);
         etContact = findViewById(R.id.etContact);
         btnSaveContact = findViewById(R.id.btnSaveContact);
         btnSOS = findViewById(R.id.btnSOS);
         btnSiren = findViewById(R.id.btnSiren);
-        profileContainer = findViewById(R.id.profileContainer); // ✅ updated
+        profileContainer = findViewById(R.id.profileContainer);
         recyclerContacts = findViewById(R.id.recyclerContacts);
 
         sharedPreferences = getSharedPreferences("SafetyApp", MODE_PRIVATE);
@@ -64,7 +65,6 @@ public class MainActivity extends AppCompatActivity {
 
         tvWelcome.setText("Stay Safe 💜");
 
-        // INIT CONTACT LIST
         contactList = new ArrayList<>();
         recyclerContacts.setLayoutManager(new LinearLayoutManager(this));
         adapter = new ContactAdapter(this, contactList);
@@ -72,17 +72,19 @@ public class MainActivity extends AppCompatActivity {
 
         loadContacts();
 
-        // BUTTON CLICK LISTENERS
-        btnSaveContact.setOnClickListener(v -> saveContact());
+        // UPDATED BUTTON LISTENER
+        btnSaveContact.setOnClickListener(v -> {
+            saveContact();
+            hideKeyboard();   // ✅ keyboard hides after saving
+        });
+
         btnSOS.setOnClickListener(v -> checkPermissionsAndSend());
         btnSiren.setOnClickListener(v -> toggleSiren());
 
-        // ✅ PROFILE CLICK (Icon + Text together clickable)
         profileContainer.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class))
         );
 
-        // SWIPE TO DELETE CONTACT
         ItemTouchHelper.SimpleCallback simpleCallback =
                 new ItemTouchHelper.SimpleCallback(0,
                         ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
@@ -110,8 +112,17 @@ public class MainActivity extends AppCompatActivity {
         new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerContacts);
     }
 
-    // SAVE CONTACT
+    // HIDE KEYBOARD METHOD
+    private void hideKeyboard() {
+        View view = this.getCurrentFocus();
+        if (view != null) {
+            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
+            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
+        }
+    }
+
     private void saveContact() {
+
         String newNumber = etContact.getText().toString().trim();
 
         if (newNumber.length() < 10) {
@@ -120,6 +131,7 @@ public class MainActivity extends AppCompatActivity {
         }
 
         boolean exists = false;
+
         for (ContactModel c : contactList) {
             if (c.getPhone().equals(newNumber)) {
                 exists = true;
@@ -132,19 +144,23 @@ public class MainActivity extends AppCompatActivity {
             adapter.notifyItemInserted(contactList.size() - 1);
             etContact.setText("");
             updateSharedPreferences();
+
             Toast.makeText(this, "Contact Saved", Toast.LENGTH_SHORT).show();
         } else {
             Toast.makeText(this, "Contact Already Exists", Toast.LENGTH_SHORT).show();
         }
     }
 
-    // LOAD CONTACTS
     private void loadContacts() {
+
         contactList.clear();
+
         String contacts = sharedPreferences.getString("trusted_contacts", "");
 
         if (!contacts.isEmpty()) {
+
             String[] numbers = contacts.split(",");
+
             for (String number : numbers) {
                 contactList.add(new ContactModel("", number.trim()));
             }
@@ -153,13 +169,15 @@ public class MainActivity extends AppCompatActivity {
         adapter.notifyDataSetChanged();
     }
 
-    // UPDATE SHARED PREFERENCES
     private void updateSharedPreferences() {
+
         StringBuilder builder = new StringBuilder();
 
         for (int i = 0; i < contactList.size(); i++) {
             builder.append(contactList.get(i).getPhone());
-            if (i != contactList.size() - 1) builder.append(",");
+
+            if (i != contactList.size() - 1)
+                builder.append(",");
         }
 
         sharedPreferences.edit()
@@ -167,9 +185,10 @@ public class MainActivity extends AppCompatActivity {
                 .apply();
     }
 
-    // SIREN FUNCTION
     private void toggleSiren() {
+
         try {
+
             if (mediaPlayer == null) {
                 mediaPlayer = MediaPlayer.create(this, R.raw.siren);
                 mediaPlayer.setLooping(true);
@@ -184,6 +203,7 @@ public class MainActivity extends AppCompatActivity {
             }
 
         } catch (Exception e) {
+
             Toast.makeText(this,
                     "Siren Error: " + e.getMessage(),
                     Toast.LENGTH_SHORT).show();
@@ -192,14 +212,15 @@ public class MainActivity extends AppCompatActivity {
 
     @Override
     protected void onDestroy() {
+
         super.onDestroy();
+
         if (mediaPlayer != null) {
             mediaPlayer.release();
             mediaPlayer = null;
         }
     }
 
-    // PERMISSIONS
     private final ActivityResultLauncher<String[]> permissionLauncher =
             registerForActivityResult(
                     new ActivityResultContracts.RequestMultiplePermissions(),
@@ -207,12 +228,16 @@ public class MainActivity extends AppCompatActivity {
             );
 
     private void checkPermissionsAndSend() {
+
         if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
                 == PackageManager.PERMISSION_GRANTED &&
                 ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
                         == PackageManager.PERMISSION_GRANTED) {
+
             sendSOS();
+
         } else {
+
             permissionLauncher.launch(new String[]{
                     Manifest.permission.SEND_SMS,
                     Manifest.permission.ACCESS_FINE_LOCATION
@@ -221,6 +246,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void handlePermissionResult(@NonNull Map<String, Boolean> result) {
+
         Boolean smsGranted = result.getOrDefault(Manifest.permission.SEND_SMS, false);
         Boolean locationGranted = result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
 
@@ -264,10 +290,13 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void sendSMS(String message) {
+
         try {
+
             SmsManager smsManager = SmsManager.getDefault();
 
             for (ContactModel c : contactList) {
+
                 smsManager.sendMultipartTextMessage(
                         c.getPhone(),
                         null,
@@ -282,6 +311,7 @@ public class MainActivity extends AppCompatActivity {
                     Toast.LENGTH_LONG).show();
 
         } catch (Exception e) {
+
             Toast.makeText(this,
                     "SMS Failed: " + e.getMessage(),
                     Toast.LENGTH_LONG).show();
