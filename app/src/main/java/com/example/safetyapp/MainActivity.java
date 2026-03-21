@@ -75,7 +75,7 @@ public class MainActivity extends AppCompatActivity {
         // UPDATED BUTTON LISTENER
         btnSaveContact.setOnClickListener(v -> {
             saveContact();
-            hideKeyboard();   // ✅ keyboard hides after saving
+            hideKeyboard();   //  keyboard hides after saving
         });
 
         btnSOS.setOnClickListener(v -> checkPermissionsAndSend());
@@ -279,7 +279,8 @@ public class MainActivity extends AppCompatActivity {
                         longitude = location.getLongitude();
                     }
 
-                    String message = "🚨 EMERGENCY ALERT 🚨\n\n"
+                    String message = "HELP_ALERT\n\n"
+                            + "🚨 EMERGENCY ALERT 🚨\n\n"
                             + "I need immediate help.\n\n"
                             + "My Location:\n"
                             + "https://www.google.com/maps?q="
