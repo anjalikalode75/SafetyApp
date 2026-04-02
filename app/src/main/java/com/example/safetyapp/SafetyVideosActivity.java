@@ -3,44 +3,48 @@ package com.example.safetyapp;
 import android.os.Bundle;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.recyclerview.widget.LinearLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.views.YouTubePlayerView;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.listeners.AbstractYouTubePlayerListener;
-import com.pierfrancescosoffritti.androidyoutubeplayer.core.player.YouTubePlayer;
+import java.util.ArrayList;
+import java.util.List;
 
 public class SafetyVideosActivity extends AppCompatActivity {
+
+    private RecyclerView recyclerView;
+    private List<VideoModel> videoList;
+    private SafetyVideoAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_safety_videos);
 
-        YouTubePlayerView player1 = findViewById(R.id.player1);
-        YouTubePlayerView player2 = findViewById(R.id.player2);
-        YouTubePlayerView player3 = findViewById(R.id.player3);
-        YouTubePlayerView player4 = findViewById(R.id.player4);
+        recyclerView = findViewById(R.id.recyclerVideos);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
 
-        getLifecycle().addObserver(player1);
-        getLifecycle().addObserver(player2);
-        getLifecycle().addObserver(player3);
-        getLifecycle().addObserver(player4);
+        videoList = new ArrayList<>();
 
-        // 🔴 Replace with real video IDs
-        cueVideo(player1, "6wEjW3B_wPW8K-Q3"); // example
-        cueVideo(player2, "Cqc1QlwPDux9A0Is");
-        cueVideo(player3, "WcW3uoDu7LNQ9pv0");
-        cueVideo(player4, "2vNYWfr4cSj4CwnI");
-    }
+        // 🔥 ADD VIDEOS HERE
+        videoList.add(new VideoModel(
+                "Self Defense for Girls",
+                "https://www.youtube.com/watch?v=KVpxP3ZZtAc",
+                android.R.drawable.ic_media_play
+        ));
 
-    private void cueVideo(YouTubePlayerView player1, String s) {
-    }
+        videoList.add(new VideoModel(
+                "Emergency Safety Tips",
+                "https://www.youtube.com/watch?v=8V0b2G6h7rM",
+                android.R.drawable.ic_media_play
+        ));
 
-    private void loadVideo(YouTubePlayerView playerView, String videoId) {
-        playerView.addYouTubePlayerListener(new AbstractYouTubePlayerListener() {
-            @Override
-            public void onReady(YouTubePlayer youTubePlayer) {
-                youTubePlayer.cueVideo(videoId, 0); // better than loadVideo
-            }
-        });
+        videoList.add(new VideoModel(
+                "How to Escape Danger",
+                "https://www.youtube.com/watch?v=Jw6Q8d0z3Zk",
+                android.R.drawable.ic_media_play
+        ));
+
+        adapter = new SafetyVideoAdapter(this, videoList);
+        recyclerView.setAdapter(adapter);
     }
 }
