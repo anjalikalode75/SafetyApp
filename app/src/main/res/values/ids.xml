@@ -12,4 +12,6 @@
     <item name="btnLogout" type="id" />
     <item name="recyclerProfileContacts" type="id" />
     <item name="profileImage" type="id" />
+    <item name="profileContainer" type="id" />
+    <item name="map" type="id" />
 </resources>

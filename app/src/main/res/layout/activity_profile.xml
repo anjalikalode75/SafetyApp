@@ -98,6 +98,15 @@
                 android:backgroundTint="#D32F2F"/>
 
         </LinearLayout>
+        <Button
+            android:id="@+id/btnSafetyVideos"
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:text="🎥 Self Defense Videos"
+            android:textStyle="bold"
+            android:textColor="#FFFFFF"
+            android:backgroundTint="#009688"
+            android:layout_marginTop="16dp"/>
 
         <!-- Trusted Contacts Title -->
         <TextView

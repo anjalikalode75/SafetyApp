@@ -3,34 +3,49 @@ package com.example.safetyapp;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.os.Build;
 import android.os.Bundle;
 import android.telephony.SmsMessage;
-
-import androidx.core.content.ContextCompat;
 
 public class SmsReceiver extends BroadcastReceiver {
 
     @Override
     public void onReceive(Context context, Intent intent) {
 
-        if (intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
+        if (intent.getAction() != null &&
+                intent.getAction().equals("android.provider.Telephony.SMS_RECEIVED")) {
 
             Bundle bundle = intent.getExtras();
 
             if (bundle != null) {
 
                 Object[] pdus = (Object[]) bundle.get("pdus");
+                String format = bundle.getString("format");
 
-                for (Object pdu : pdus) {
+                if (pdus != null) {
+                    for (Object pdu : pdus) {
 
-                    SmsMessage sms = SmsMessage.createFromPdu((byte[]) pdu);
-                    String message = sms.getMessageBody();
+                        SmsMessage sms;
 
-                    if (message.contains("HELP_ALERT")) {
+                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                            sms = SmsMessage.createFromPdu((byte[]) pdu, format);
+                        } else {
+                            sms = SmsMessage.createFromPdu((byte[]) pdu);
+                        }
 
-                        Intent sirenIntent = new Intent(context, SirenService.class);
+                        String message = sms.getMessageBody();
 
-                        ContextCompat.startForegroundService(context, sirenIntent);
+                        // ✅ IMPORTANT FIX (MATCH WITH SENDER)
+                        if (message != null && message.contains("SOS_ALERT")) {
+
+                            Intent serviceIntent = new Intent(context, SirenService.class);
+
+                            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
+                                context.startForegroundService(serviceIntent);
+                            } else {
+                                context.startService(serviceIntent);
+                            }
+                        }
                     }
                 }
             }

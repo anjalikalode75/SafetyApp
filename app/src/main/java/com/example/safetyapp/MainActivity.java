@@ -4,15 +4,11 @@ import android.Manifest;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.content.pm.PackageManager;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.telephony.SmsManager;
-import android.view.View;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.LinearLayout;
-import android.widget.TextView;
+import android.widget.ImageView;
 import android.widget.Toast;
 
 import androidx.activity.result.ActivityResultLauncher;
@@ -34,148 +30,131 @@ import java.util.Map;
 
 public class MainActivity extends AppCompatActivity {
 
-    private TextView tvWelcome;
     private EditText etContact;
-    private Button btnSaveContact, btnSOS, btnSiren;
-    private LinearLayout profileContainer;
+    private Button btnSaveContact, btnSOS, btnLiveTracking;
+    private ImageView btnSettings, btnProfile;
+
     private RecyclerView recyclerContacts;
 
     private SharedPreferences sharedPreferences;
-    private MediaPlayer mediaPlayer;
     private FusedLocationProviderClient fusedLocationClient;
 
-    private List<ContactModel> contactList;
-    private ContactAdapter adapter;
+    private List<String> contactList;
+    private ContactsAdapter adapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
         setContentView(R.layout.activity_main);
 
-        tvWelcome = findViewById(R.id.tvWelcome);
+        // 🔗 CONNECT VIEWS
         etContact = findViewById(R.id.etContact);
         btnSaveContact = findViewById(R.id.btnSaveContact);
         btnSOS = findViewById(R.id.btnSOS);
-        btnSiren = findViewById(R.id.btnSiren);
-        profileContainer = findViewById(R.id.profileContainer);
+        btnSettings = findViewById(R.id.btnSettings);
+        btnLiveTracking = findViewById(R.id.btnLiveTracking);
+        btnProfile = findViewById(R.id.btnProfile);
         recyclerContacts = findViewById(R.id.recyclerContacts);
 
         sharedPreferences = getSharedPreferences("SafetyApp", MODE_PRIVATE);
         fusedLocationClient = LocationServices.getFusedLocationProviderClient(this);
 
-        tvWelcome.setText("Stay Safe 💜");
-
+        // Recycler setup
         contactList = new ArrayList<>();
         recyclerContacts.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new ContactAdapter(this, contactList);
+        adapter = new ContactsAdapter(this, contactList);
         recyclerContacts.setAdapter(adapter);
 
         loadContacts();
 
-        // UPDATED BUTTON LISTENER
-        btnSaveContact.setOnClickListener(v -> {
-            saveContact();
-            hideKeyboard();   //  keyboard hides after saving
-        });
+        // 🔘 BUTTONS
+        btnSaveContact.setOnClickListener(v -> saveContact());
 
         btnSOS.setOnClickListener(v -> checkPermissionsAndSend());
-        btnSiren.setOnClickListener(v -> toggleSiren());
 
-        profileContainer.setOnClickListener(v ->
+        btnProfile.setOnClickListener(v ->
                 startActivity(new Intent(MainActivity.this, ProfileActivity.class))
         );
 
-        ItemTouchHelper.SimpleCallback simpleCallback =
-                new ItemTouchHelper.SimpleCallback(0,
-                        ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
+        btnSettings.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, SettingsActivity.class))
+        );
 
-                    @Override
-                    public boolean onMove(@NonNull RecyclerView recyclerView,
-                                          @NonNull RecyclerView.ViewHolder viewHolder,
-                                          @NonNull RecyclerView.ViewHolder target) {
-                        return false;
-                    }
+        btnLiveTracking.setOnClickListener(v ->
+                startActivity(new Intent(MainActivity.this, LiveTrackingActivity.class))
+        );
 
-                    @Override
-                    public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
-                        int position = viewHolder.getAdapterPosition();
-                        contactList.remove(position);
-                        adapter.notifyItemRemoved(position);
-                        updateSharedPreferences();
+        // Swipe delete
+        new ItemTouchHelper(new ItemTouchHelper.SimpleCallback(0,
+                ItemTouchHelper.LEFT | ItemTouchHelper.RIGHT) {
 
-                        Toast.makeText(MainActivity.this,
-                                "Contact Deleted",
-                                Toast.LENGTH_SHORT).show();
-                    }
-                };
+            @Override
+            public boolean onMove(@NonNull RecyclerView recyclerView,
+                                  @NonNull RecyclerView.ViewHolder viewHolder,
+                                  @NonNull RecyclerView.ViewHolder target) {
+                return false;
+            }
 
-        new ItemTouchHelper(simpleCallback).attachToRecyclerView(recyclerContacts);
+            @Override
+            public void onSwiped(@NonNull RecyclerView.ViewHolder viewHolder, int direction) {
+                int position = viewHolder.getAdapterPosition();
+                contactList.remove(position);
+                adapter.notifyItemRemoved(position);
+                updateSharedPreferences();
+
+                Toast.makeText(MainActivity.this, "Contact Deleted", Toast.LENGTH_SHORT).show();
+            }
+        }).attachToRecyclerView(recyclerContacts);
     }
 
-    // HIDE KEYBOARD METHOD
-    private void hideKeyboard() {
-        View view = this.getCurrentFocus();
-        if (view != null) {
-            InputMethodManager imm = (InputMethodManager) getSystemService(INPUT_METHOD_SERVICE);
-            imm.hideSoftInputFromWindow(view.getWindowToken(), 0);
-        }
-    }
-
+    // ✅ SAVE CONTACT
     private void saveContact() {
-
         String newNumber = etContact.getText().toString().trim();
 
-        if (newNumber.length() < 10) {
-            Toast.makeText(this, "Enter valid phone number", Toast.LENGTH_SHORT).show();
+        if (newNumber.isEmpty()) {
+            Toast.makeText(this, "Enter phone number", Toast.LENGTH_SHORT).show();
             return;
         }
 
-        boolean exists = false;
-
-        for (ContactModel c : contactList) {
-            if (c.getPhone().equals(newNumber)) {
-                exists = true;
-                break;
-            }
+        if (newNumber.length() < 10) {
+            Toast.makeText(this, "Invalid number", Toast.LENGTH_SHORT).show();
+            return;
         }
 
-        if (!exists) {
-            contactList.add(new ContactModel("", newNumber));
-            adapter.notifyItemInserted(contactList.size() - 1);
+        if (!contactList.contains(newNumber)) {
+            contactList.add(newNumber);
+            adapter.notifyDataSetChanged();
             etContact.setText("");
             updateSharedPreferences();
 
             Toast.makeText(this, "Contact Saved", Toast.LENGTH_SHORT).show();
         } else {
-            Toast.makeText(this, "Contact Already Exists", Toast.LENGTH_SHORT).show();
+            Toast.makeText(this, "Already Exists", Toast.LENGTH_SHORT).show();
         }
     }
 
+    // ✅ LOAD CONTACTS
     private void loadContacts() {
-
         contactList.clear();
-
         String contacts = sharedPreferences.getString("trusted_contacts", "");
 
         if (!contacts.isEmpty()) {
-
             String[] numbers = contacts.split(",");
-
             for (String number : numbers) {
-                contactList.add(new ContactModel("", number.trim()));
+                contactList.add(number.trim());
             }
         }
 
         adapter.notifyDataSetChanged();
     }
 
+    // ✅ SAVE CONTACTS
     private void updateSharedPreferences() {
-
         StringBuilder builder = new StringBuilder();
 
         for (int i = 0; i < contactList.size(); i++) {
-            builder.append(contactList.get(i).getPhone());
-
+            builder.append(contactList.get(i));
             if (i != contactList.size() - 1)
                 builder.append(",");
         }
@@ -185,39 +164,20 @@ public class MainActivity extends AppCompatActivity {
                 .apply();
     }
 
-    private void toggleSiren() {
+    // ✅ PERMISSION CHECK
+    private void checkPermissionsAndSend() {
+        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
+                == PackageManager.PERMISSION_GRANTED &&
+                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
+                        == PackageManager.PERMISSION_GRANTED) {
 
-        try {
+            sendSOS();
 
-            if (mediaPlayer == null) {
-                mediaPlayer = MediaPlayer.create(this, R.raw.siren);
-                mediaPlayer.setLooping(true);
-            }
-
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.pause();
-                btnSiren.setText("🔊 Start Siren");
-            } else {
-                mediaPlayer.start();
-                btnSiren.setText("⛔ Stop Siren");
-            }
-
-        } catch (Exception e) {
-
-            Toast.makeText(this,
-                    "Siren Error: " + e.getMessage(),
-                    Toast.LENGTH_SHORT).show();
-        }
-    }
-
-    @Override
-    protected void onDestroy() {
-
-        super.onDestroy();
-
-        if (mediaPlayer != null) {
-            mediaPlayer.release();
-            mediaPlayer = null;
+        } else {
+            permissionLauncher.launch(new String[]{
+                    Manifest.permission.SEND_SMS,
+                    Manifest.permission.ACCESS_FINE_LOCATION
+            });
         }
     }
 
@@ -227,36 +187,18 @@ public class MainActivity extends AppCompatActivity {
                     this::handlePermissionResult
             );
 
-    private void checkPermissionsAndSend() {
-
-        if (ContextCompat.checkSelfPermission(this, Manifest.permission.SEND_SMS)
-                == PackageManager.PERMISSION_GRANTED &&
-                ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION)
-                        == PackageManager.PERMISSION_GRANTED) {
-
-            sendSOS();
-
-        } else {
-
-            permissionLauncher.launch(new String[]{
-                    Manifest.permission.SEND_SMS,
-                    Manifest.permission.ACCESS_FINE_LOCATION
-            });
-        }
-    }
-
     private void handlePermissionResult(@NonNull Map<String, Boolean> result) {
+        if (result.getOrDefault(Manifest.permission.SEND_SMS, false)
+                && result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false)) {
 
-        Boolean smsGranted = result.getOrDefault(Manifest.permission.SEND_SMS, false);
-        Boolean locationGranted = result.getOrDefault(Manifest.permission.ACCESS_FINE_LOCATION, false);
-
-        if (smsGranted && locationGranted) {
             sendSOS();
+
         } else {
             Toast.makeText(this, "Permissions Required!", Toast.LENGTH_SHORT).show();
         }
     }
 
+    // ✅ SEND SOS (IMPORTANT FIX HERE)
     @RequiresPermission(allOf = {
             Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION
@@ -271,51 +213,40 @@ public class MainActivity extends AppCompatActivity {
         fusedLocationClient.getLastLocation()
                 .addOnSuccessListener(location -> {
 
-                    double latitude = 0.0;
-                    double longitude = 0.0;
+                    double lat = (location != null) ? location.getLatitude() : 0;
+                    double lon = (location != null) ? location.getLongitude() : 0;
 
-                    if (location != null) {
-                        latitude = location.getLatitude();
-                        longitude = location.getLongitude();
-                    }
-
-                    String message = "HELP_ALERT\n\n"
-                            + "🚨 EMERGENCY ALERT 🚨\n\n"
-                            + "I need immediate help.\n\n"
-                            + "My Location:\n"
-                            + "https://www.google.com/maps?q="
-                            + latitude + "," + longitude;
+                    // 🔥 IMPORTANT KEYWORD (must match receiver)
+                    String message = "SOS_ALERT 🚨\n"
+                            + "I need help!\n"
+                            + "https://maps.google.com/?q=" + lat + "," + lon;
 
                     sendSMS(message);
                 });
     }
 
+    // ✅ STRONG SMS SENDING (FIXED)
     private void sendSMS(String message) {
-
         try {
-
             SmsManager smsManager = SmsManager.getDefault();
 
-            for (ContactModel c : contactList) {
+            for (String number : contactList) {
+
+                ArrayList<String> parts = smsManager.divideMessage(message);
 
                 smsManager.sendMultipartTextMessage(
-                        c.getPhone(),
+                        number,
                         null,
-                        smsManager.divideMessage(message),
+                        parts,
                         null,
                         null
                 );
             }
 
-            Toast.makeText(this,
-                    "SOS Sent Successfully!",
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "SOS Sent Successfully!", Toast.LENGTH_LONG).show();
 
         } catch (Exception e) {
-
-            Toast.makeText(this,
-                    "SMS Failed: " + e.getMessage(),
-                    Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "SMS Failed: " + e.getMessage(), Toast.LENGTH_LONG).show();
         }
     }
 }

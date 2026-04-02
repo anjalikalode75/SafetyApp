@@ -20,11 +20,15 @@ public class ProfileActivity extends AppCompatActivity {
 
     TextView tvUsername, tvEmail;
     Button btnEditProfile, btnLogout;
+
+    // ✅ NEW BUTTON
+    Button btnSafetyVideos;
+
     ImageView ivProfile;
     RecyclerView recyclerProfileContacts;
 
-    ArrayList<ContactModel> contactList;
-    ContactAdapter adapter;
+    ArrayList<String> contactList;
+    ContactsAdapter adapter;
 
     private ActivityResultLauncher<Intent> pickImageLauncher;
     private SharedPreferences safetyPrefs;
@@ -35,21 +39,23 @@ public class ProfileActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_profile);
 
-        // Bind views
+        // Bind Views
         tvUsername = findViewById(R.id.tvUsername);
         tvEmail = findViewById(R.id.tvEmail);
         btnEditProfile = findViewById(R.id.btnEditProfile);
         btnLogout = findViewById(R.id.btnLogout);
+        btnSafetyVideos = findViewById(R.id.btnSafetyVideos); // ✅ NEW
+
         ivProfile = findViewById(R.id.ivProfile);
         recyclerProfileContacts = findViewById(R.id.recyclerProfileContacts);
 
-        // RecyclerView setup
+        // RecyclerView Setup
         contactList = new ArrayList<>();
         recyclerProfileContacts.setLayoutManager(new LinearLayoutManager(this));
-        adapter = new ContactAdapter(this, contactList);
+        adapter = new ContactsAdapter(this, contactList);
         recyclerProfileContacts.setAdapter(adapter);
 
-        // Load user info
+        // SharedPreferences
         safetyPrefs = getSharedPreferences("SafetyApp", MODE_PRIVATE);
         username = safetyPrefs.getString("username", "User");
 
@@ -59,14 +65,12 @@ public class ProfileActivity extends AppCompatActivity {
         tvUsername.setText(username);
         tvEmail.setText(email);
 
-        // Load saved profile photo
         loadProfilePhoto();
-
-        // Load trusted contacts
         loadContacts();
 
-        // Edit profile
-        btnEditProfile.setOnClickListener(v -> startActivity(new Intent(ProfileActivity.this, EditProfileActivity.class)));
+        // Edit Profile
+        btnEditProfile.setOnClickListener(v ->
+                startActivity(new Intent(ProfileActivity.this, EditProfileActivity.class)));
 
         // Logout
         btnLogout.setOnClickListener(v -> {
@@ -76,7 +80,12 @@ public class ProfileActivity extends AppCompatActivity {
             startActivity(intent);
         });
 
-        // Setup Activity Result for image picking
+        // ✅ OPEN SAFETY VIDEOS
+        btnSafetyVideos.setOnClickListener(v -> {
+            startActivity(new Intent(ProfileActivity.this, SafetyVideosActivity.class));
+        });
+
+        // Image Picker
         pickImageLauncher = registerForActivityResult(
                 new ActivityResultContracts.StartActivityForResult(),
                 result -> {
@@ -89,7 +98,6 @@ public class ProfileActivity extends AppCompatActivity {
                 }
         );
 
-        // Click profile to change
         ivProfile.setOnClickListener(v -> {
             Intent intent = new Intent(Intent.ACTION_PICK);
             intent.setType("image/*");
@@ -97,33 +105,38 @@ public class ProfileActivity extends AppCompatActivity {
         });
     }
 
+    // Load Contacts
     private void loadContacts() {
         String contacts = safetyPrefs.getString("trusted_contacts", "");
 
         contactList.clear();
+
         if (!contacts.isEmpty()) {
             String[] numbers = contacts.split(",");
             for (String number : numbers) {
-                contactList.add(new ContactModel("", number.trim()));
+                contactList.add(number.trim());
             }
         }
+
         adapter.notifyDataSetChanged();
     }
 
+    // Load Profile Photo
     private void loadProfilePhoto() {
         String savedPhoto = safetyPrefs.getString(username + "_photo", "");
+
         if (!savedPhoto.isEmpty()) {
             try {
                 ivProfile.setImageURI(Uri.parse(savedPhoto));
             } catch (Exception e) {
-                e.printStackTrace();
-                ivProfile.setImageResource(R.drawable.ic_profile); // fallback
+                ivProfile.setImageResource(R.drawable.ic_profile);
             }
         } else {
             ivProfile.setImageResource(R.drawable.ic_profile);
         }
     }
 
+    // Save Profile Photo
     private void saveProfilePhoto(Uri uri) {
         safetyPrefs.edit().putString(username + "_photo", uri.toString()).apply();
         ivProfile.setImageURI(uri);
