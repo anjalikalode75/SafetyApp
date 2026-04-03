@@ -15,4 +15,6 @@
     <item name="profileContainer" type="id" />
     <item name="map" type="id" />
     <item name="videoTitle" type="id" />
+    <item name="txtTitle" type="id" />
+    <item name="webView" type="id" />
 </resources>

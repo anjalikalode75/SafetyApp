@@ -4,12 +4,10 @@ public class VideoModel {
 
     private String title;
     private String videoUrl;
-    private int thumbnail;
 
-    public VideoModel(String title, String videoUrl, int thumbnail) {
+    public VideoModel(String title, String videoUrl) {
         this.title = title;
         this.videoUrl = videoUrl;
-        this.thumbnail = thumbnail;
     }
 
     public String getTitle() {
@@ -18,13 +16,5 @@ public class VideoModel {
 
     public String getVideoUrl() {
         return videoUrl;
-    }
-
-    public int getThumbnail() {
-        return thumbnail;
-    }
-
-    public String getUrl() {
-        return null;
     }
 }

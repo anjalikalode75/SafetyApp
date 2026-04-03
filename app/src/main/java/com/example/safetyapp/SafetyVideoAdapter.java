@@ -11,7 +11,10 @@ import android.widget.TextView;
 
 import androidx.recyclerview.widget.RecyclerView;
 
+import com.bumptech.glide.Glide;
+
 import java.util.List;
+import com.bumptech.glide.Glide;
 
 public class SafetyVideoAdapter extends RecyclerView.Adapter<SafetyVideoAdapter.ViewHolder> {
 
@@ -35,10 +38,20 @@ public class SafetyVideoAdapter extends RecyclerView.Adapter<SafetyVideoAdapter.
         VideoModel video = videoList.get(position);
 
         holder.txtTitle.setText(video.getTitle());
-        holder.imgThumbnail.setImageResource(video.getThumbnail());
+
+        // 🔥 GET YOUTUBE THUMBNAIL
+        String videoId = video.getVideoUrl().split("v=")[1];
+        String thumbnailUrl = "https://img.youtube.com/vi/" + videoId + "/0.jpg";
+
+        // 🔥 LOAD IMAGE USING GLIDE
+        Glide.with(context)
+                .load(thumbnailUrl)
+                .into(holder.imgThumbnail);
 
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(video.getVideoUrl()));
+            Intent intent = new Intent(context, VideoPlayerActivity.class);
+            intent.putExtra("url", video.getVideoUrl());
+            intent.putExtra("title", video.getTitle());
             context.startActivity(intent);
         });
     }

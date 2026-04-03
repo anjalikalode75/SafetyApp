@@ -28,20 +28,17 @@ public class SafetyVideosActivity extends AppCompatActivity {
         // 🔥 ADD VIDEOS HERE
         videoList.add(new VideoModel(
                 "Self Defense for Girls",
-                "https://www.youtube.com/watch?v=KVpxP3ZZtAc",
-                android.R.drawable.ic_media_play
+                "https://www.youtube.com/watch?v=KVpxP3ZZtAc"
         ));
 
         videoList.add(new VideoModel(
                 "Emergency Safety Tips",
-                "https://www.youtube.com/watch?v=8V0b2G6h7rM",
-                android.R.drawable.ic_media_play
+                "https://www.youtube.com/watch?v=8V0b2G6h7rM"
         ));
 
         videoList.add(new VideoModel(
                 "How to Escape Danger",
-                "https://www.youtube.com/watch?v=Jw6Q8d0z3Zk",
-                android.R.drawable.ic_media_play
+                "https://www.youtube.com/watch?v=Jw6Q8d0z3Zk"
         ));
 
         adapter = new SafetyVideoAdapter(this, videoList);
