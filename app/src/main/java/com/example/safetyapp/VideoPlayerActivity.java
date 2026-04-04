@@ -25,22 +25,47 @@ public class VideoPlayerActivity extends AppCompatActivity {
 
         videoTitle.setText(title);
 
+        // ✅ IMPORTANT SETTINGS
         webView.getSettings().setJavaScriptEnabled(true);
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+
         webView.setWebViewClient(new WebViewClient());
 
-        // 🔥 EMBED YOUTUBE VIDEO (REAL PLAYER UI)
+        // ✅ GET VIDEO ID
+        String videoId = getVideoId(videoUrl);
+
+        // ✅ EMBED PLAYER
         String embedHtml =
                 "<html><body style='margin:0;padding:0;'>" +
                         "<iframe width='100%' height='100%' " +
-                        "src='https://www.youtube.com/embed/" + getVideoId(videoUrl) + "' " +
-                        "frameborder='0' allowfullscreen></iframe>" +
+                        "src='https://www.youtube-nocookie.com/embed/" + videoId + "?autoplay=1&controls=1' " +
+                        "frameborder='0' allow='autoplay; encrypted-media' allowfullscreen></iframe>" +
                         "</body></html>";
 
-        webView.loadData(embedHtml, "text/html", "utf-8");
+        // 🔥 MAIN FIX (VERY IMPORTANT)
+        webView.getSettings().setDomStorageEnabled(true);
+        webView.getSettings().setMediaPlaybackRequiresUserGesture(false);
+
+        webView.loadDataWithBaseURL(
+                "https://www.youtube.com",
+                embedHtml,
+                "text/html",
+                "utf-8",
+                null
+        );
     }
 
-    // Extract video ID
+    // ✅ SAFE VIDEO ID METHOD
     private String getVideoId(String url) {
-        return url.split("v=")[1];
+        try {
+            if (url.contains("v=")) {
+                String id = url.split("v=")[1];
+                return id.contains("&") ? id.substring(0, id.indexOf("&")) : id;
+            }
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 }

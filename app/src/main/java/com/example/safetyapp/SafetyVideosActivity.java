@@ -26,6 +26,8 @@ public class SafetyVideosActivity extends AppCompatActivity {
         videoList = new ArrayList<>();
 
         // 🔥 ADD VIDEOS HERE
+        videoList = new ArrayList<>();
+
         videoList.add(new VideoModel(
                 "Self Defense for Girls",
                 "https://www.youtube.com/watch?v=KVpxP3ZZtAc"
@@ -33,12 +35,30 @@ public class SafetyVideosActivity extends AppCompatActivity {
 
         videoList.add(new VideoModel(
                 "Emergency Safety Tips",
-                "https://www.youtube.com/watch?v=8V0b2G6h7rM"
+                "https://youtu.be/Gx3_x6RH1J4?si=F9SLZpSGw5k01GpB"
         ));
 
         videoList.add(new VideoModel(
-                "How to Escape Danger",
-                "https://www.youtube.com/watch?v=Jw6Q8d0z3Zk"
+                "Basic Self Defense Moves",
+                "https://youtu.be/M4_8PoRQP8w?si=luVz3VM65N7EWfza"
+        ));
+
+        videoList.add(new VideoModel(
+                "SELF DEFENSE MOVES EVERY WOMAN SHOULD KNOW",
+                "https://youtu.be/k9Jn0eP-ZVg?si=TrwdvyBevA1vBzIp"
+        ));
+
+        videoList.add(new VideoModel(
+                "7 Self-Defense Techniques for Women from Professionals",
+                "https://youtu.be/T7aNSRoDCmg?si=WVim0r6AgVTuwI1S"
+        ));
+        videoList.add(new VideoModel(
+                "3 Strikes Every Woman Should Know",
+                "https://youtu.be/vQhHlk4KJoo?si=wBtfdM4jXbglnVDq"
+        ));
+        videoList.add(new VideoModel(
+                "Women's Self-defense That Actually Works!",
+                "https://youtu.be/pndPbpHLpos?si=UOp3aOtqYdkDhHnL"
         ));
 
         adapter = new SafetyVideoAdapter(this, videoList);

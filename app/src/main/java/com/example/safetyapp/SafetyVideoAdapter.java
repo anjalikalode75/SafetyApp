@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView;
 import com.bumptech.glide.Glide;
 
 import java.util.List;
-import com.bumptech.glide.Glide;
 
 public class SafetyVideoAdapter extends RecyclerView.Adapter<SafetyVideoAdapter.ViewHolder> {
 
@@ -39,19 +38,26 @@ public class SafetyVideoAdapter extends RecyclerView.Adapter<SafetyVideoAdapter.
 
         holder.txtTitle.setText(video.getTitle());
 
-        // 🔥 GET YOUTUBE THUMBNAIL
-        String videoId = video.getVideoUrl().split("v=")[1];
-        String thumbnailUrl = "https://img.youtube.com/vi/" + videoId + "/0.jpg";
+        // ✅ GET VIDEO ID SAFELY
+        String videoId = getVideoId(video.getVideoUrl());
 
-        // 🔥 LOAD IMAGE USING GLIDE
-        Glide.with(context)
-                .load(thumbnailUrl)
-                .into(holder.imgThumbnail);
+        // ✅ LOAD THUMBNAIL
+        if (!videoId.isEmpty()) {
+            String thumbnailUrl = "https://img.youtube.com/vi/" + videoId + "/hqdefault.jpg";
 
+            Glide.with(context)
+                    .load(thumbnailUrl)
+                    .placeholder(android.R.drawable.ic_menu_report_image)
+                    .error(android.R.drawable.ic_menu_report_image)
+                    .into(holder.imgThumbnail);
+        } else {
+            holder.imgThumbnail.setImageResource(android.R.drawable.ic_menu_report_image);
+        }
+
+        // 🔥 FINAL FIX → OPEN IN YOUTUBE APP (100% WORKING)
         holder.itemView.setOnClickListener(v -> {
-            Intent intent = new Intent(context, VideoPlayerActivity.class);
-            intent.putExtra("url", video.getVideoUrl());
-            intent.putExtra("title", video.getTitle());
+            Intent intent = new Intent(Intent.ACTION_VIEW, Uri.parse(video.getVideoUrl()));
+            intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
             context.startActivity(intent);
         });
     }
@@ -59,6 +65,28 @@ public class SafetyVideoAdapter extends RecyclerView.Adapter<SafetyVideoAdapter.
     @Override
     public int getItemCount() {
         return videoList.size();
+    }
+
+    // ✅ STRONG VIDEO ID METHOD
+    private String getVideoId(String url) {
+        try {
+            if (url.contains("v=")) {
+                String id = url.split("v=")[1];
+                return id.contains("&") ? id.substring(0, id.indexOf("&")) : id;
+
+            } else if (url.contains("youtu.be/")) {
+                String id = url.split("youtu.be/")[1];
+                return id.contains("?") ? id.substring(0, id.indexOf("?")) : id;
+
+            } else if (url.contains("shorts/")) {
+                String id = url.split("shorts/")[1];
+                return id.contains("?") ? id.substring(0, id.indexOf("?")) : id;
+            }
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return "";
     }
 
     public static class ViewHolder extends RecyclerView.ViewHolder {
