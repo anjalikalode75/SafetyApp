@@ -96,13 +96,6 @@
                     android:layout_height="wrap_content"
                     android:text="🌙 Dark Mode"/>
 
-                <!-- LANGUAGE BUTTON -->
-                <Button
-                    android:id="@+id/btnLanguage"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:text="🌐 Change Language"
-                    android:layout_marginTop="10dp"/>
 
             </LinearLayout>
         </androidx.cardview.widget.CardView>
