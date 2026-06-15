@@ -3,4 +3,6 @@
     <drawable name="thumb1" />
     <drawable name="thumb2" />
     <drawable name="thumb3" />
+    <drawable name="ic_alert" />
+    <drawable name="ic_delete" />
 </resources>

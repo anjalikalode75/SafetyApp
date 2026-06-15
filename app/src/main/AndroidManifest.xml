@@ -1,61 +1,65 @@
 <?xml version="1.0" encoding="utf-8"?>
-
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.example.safetyapp">
 
     <!-- FEATURES -->
-    <uses-feature android:name="android.hardware.telephony" android:required="false"/>
-    <uses-feature android:name="android.hardware.camera" android:required="false"/>
+    <uses-feature android:name="android.hardware.telephony" android:required="false" />
+    <uses-feature android:name="android.hardware.camera" android:required="false" />
 
     <!-- PERMISSIONS -->
-    <uses-permission android:name="android.permission.RECEIVE_SMS"/>
-    <uses-permission android:name="android.permission.READ_SMS"/>
-    <uses-permission android:name="android.permission.SEND_SMS"/>
-    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.INTERNET"/>
-    <uses-permission android:name="android.permission.FOREGROUND_SERVICE"/>
-
+    <uses-permission android:name="android.permission.RECEIVE_SMS" />
+    <uses-permission android:name="android.permission.READ_SMS" />
+    <uses-permission android:name="android.permission.SEND_SMS" />
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
+    <uses-permission android:name="android.permission.CAMERA" />
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.FOREGROUND_SERVICE" />
+    <uses-permission android:name="android.permission.READ_MEDIA_IMAGES" />
     <application
         android:allowBackup="true"
+        android:icon="@mipmap/app_logo"
+        android:roundIcon="@mipmap/app_logo"
         android:label="@string/app_name"
         android:theme="@style/Theme.Material3.DayNight.NoActionBar">
 
-        <!-- ✅ ONLY ONE LAUNCHER -->
-        <activity android:name=".SplashActivity" android:exported="true">
+        <!-- LAUNCHER ACTIVITY -->
+        <activity
+            android:name=".SplashActivity"
+            android:exported="true"
+            android:theme="@style/Theme.Material3.DayNight.NoActionBar">
             <intent-filter>
-                <action android:name="android.intent.action.MAIN"/>
-                <category android:name="android.intent.category.LAUNCHER"/>
+                <action android:name="android.intent.action.MAIN" />
+                <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
 
-        <!-- OTHER ACTIVITIES -->
-        <activity android:name=".MainActivity"/>
-        <activity android:name=".ProfileActivity"/>
-        <activity android:name=".LoginActivity"/>
-        <activity android:name=".RegistrationActivity"/>
-        <activity android:name=".EditProfileActivity"/>
-        <activity android:name=".SafetyVideosActivity"/>
-        <activity android:name=".SettingsActivity"/>
-        <activity android:name=".LiveTrackingActivity"/>
+        <!-- MAIN FLOW -->
+        <activity android:name=".MainActivity" />
+        <activity android:name=".ContactsActivity" />
+        <activity android:name=".ProfileActivity" />
+        <activity android:name=".SettingsActivity" />
 
-        <!-- ✅ VIDEO PLAYER -->
-        <activity android:name=".VideoPlayerActivity"/>
+        <!-- OPTIONAL / OTHER -->
+        <activity android:name=".LoginActivity" />
+        <activity android:name=".RegistrationActivity" />
+        <activity android:name=".EditProfileActivity" />
+        <activity android:name=".SafetyVideosActivity" />
+        <activity android:name=".LiveTrackingActivity" />
+        <activity android:name=".VideoPlayerActivity" />
 
-        <!-- ✅ SIREN SERVICE -->
+        <!-- SIREN SERVICE -->
         <service
             android:name=".SirenService"
-            android:exported="false"/>
+            android:exported="false" />
 
-        <!-- ✅ SMS RECEIVER -->
+        <!-- SMS RECEIVER -->
         <receiver
             android:name=".SmsReceiver"
             android:exported="true"
             android:permission="android.permission.BROADCAST_SMS">
-
             <intent-filter android:priority="1000">
-                <action android:name="android.provider.Telephony.SMS_RECEIVED"/>
+                <action android:name="android.provider.Telephony.SMS_RECEIVED" />
             </intent-filter>
         </receiver>
 

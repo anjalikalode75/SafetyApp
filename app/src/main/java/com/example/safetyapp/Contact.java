@@ -2,18 +2,13 @@ package com.example.safetyapp;
 
 public class Contact {
     private String name;
-    private String phone;
+    private String number;
 
-    public Contact(String name, String phone) {
+    public Contact(String name, String number) {
         this.name = name;
-        this.phone = phone;
+        this.number = number;
     }
 
-    public String getName() {
-        return name;
-    }
-
-    public String getPhone() {
-        return phone;
-    }
+    public String getName() { return name; }
+    public String getNumber() { return number; }
 }

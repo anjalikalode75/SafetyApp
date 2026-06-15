@@ -1,8 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="black">#FF000000</color>
-    <color name="white">#FFFFFFFF</color>
-    <color name="primaryColor">#6A1B9A</color>
-    <color name="primaryLight">#F3E5F5</color>
-    <color name="accentRed">#D32F2F</color>
+    <!-- Backgrounds -->
+    <color name="background">#F5F5F5</color> <!-- Light gray main background -->
+    <color name="card_bg">#FFFFFF</color> <!-- White card background -->
+
+    <!-- Buttons -->
+    <color name="button_primary">#6200EE</color> <!-- Purple -->
+    <color name="button_text">#FFFFFF</color> <!-- White text on buttons -->
+
+    <!-- Text -->
+    <color name="text_primary">#212121</color> <!-- Dark gray for main text -->
+    <color name="text_secondary">#757575</color> <!-- Gray for secondary text -->
+    <color name="text_hint">#9E9E9E</color> <!-- Hint text -->
+
+    <!-- Card Icon -->
+    <color name="icon_tint">#6200EE</color> <!-- Purple accent for icons -->
+
+    <!-- EditText background -->
+    <color name="edit_bg">#FFFFFF</color>
+    <color name="accentRed">#FF0000</color> <!-- Bright Red -->
 </resources>

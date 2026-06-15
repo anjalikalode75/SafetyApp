@@ -1,16 +1,17 @@
 package com.example.safetyapp;
 
-import android.app.Notification;
 import android.app.NotificationChannel;
 import android.app.NotificationManager;
 import android.app.Service;
-import android.content.Intent;
+import android.content.Context;
+import android.hardware.camera2.CameraAccessException;
 import android.hardware.camera2.CameraManager;
 import android.media.MediaPlayer;
 import android.os.Build;
 import android.os.Handler;
 import android.os.IBinder;
 
+import androidx.annotation.Nullable;
 import androidx.core.app.NotificationCompat;
 
 public class SirenService extends Service {
@@ -18,114 +19,90 @@ public class SirenService extends Service {
     private MediaPlayer mediaPlayer;
     private CameraManager cameraManager;
     private String cameraId;
-    private boolean isFlashOn = false;
-    private Handler handler = new Handler();
-
-    private static final String CHANNEL_ID = "SOS_CHANNEL";
-
-    private Runnable flashRunnable = new Runnable() {
-        @Override
-        public void run() {
-            try {
-                if (cameraManager != null && cameraId != null) {
-                    isFlashOn = !isFlashOn;
-                    cameraManager.setTorchMode(cameraId, isFlashOn);
-                }
-                handler.postDelayed(this, 300);
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
-        }
-    };
 
     @Override
     public void onCreate() {
         super.onCreate();
 
-        // 🔊 Siren Sound
+        // 🔊 Initialize siren
         mediaPlayer = MediaPlayer.create(this, R.raw.siren_sound);
-        if (mediaPlayer != null) {
-            mediaPlayer.setLooping(true);
-        }
 
-        // 🔦 Flash setup
-        cameraManager = (CameraManager) getSystemService(CAMERA_SERVICE);
+        // 🔦 Initialize camera flash
+        cameraManager = (CameraManager) getSystemService(Context.CAMERA_SERVICE);
         try {
-            if (cameraManager != null && cameraManager.getCameraIdList().length > 0) {
-                cameraId = cameraManager.getCameraIdList()[0];
-            }
-        } catch (Exception e) {
+            cameraId = cameraManager.getCameraIdList()[0];
+        } catch (CameraAccessException e) {
             e.printStackTrace();
         }
 
-        // 🔥 Notification Channel (MANDATORY)
+        // ⚠️ Foreground service for Android O+
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            NotificationChannel channel = new NotificationChannel(
-                    CHANNEL_ID,
-                    "SOS Emergency Alert",
-                    NotificationManager.IMPORTANCE_HIGH
-            );
+            String channelId = "Siren_Channel";
+            NotificationChannel channel = new NotificationChannel(channelId, "Siren Service", NotificationManager.IMPORTANCE_HIGH);
+            NotificationManager manager = (NotificationManager) getSystemService(Context.NOTIFICATION_SERVICE);
+            if (manager != null) manager.createNotificationChannel(channel);
 
-            channel.setDescription("Emergency SOS Alerts");
+            NotificationCompat.Builder builder = new NotificationCompat.Builder(this, channelId)
+                    .setContentTitle("SOS Alert Received")
+                    .setContentText("Flash & Siren are active")
+                    .setSmallIcon(R.drawable.ic_alert)
+                    .setPriority(NotificationCompat.PRIORITY_HIGH);
 
-            NotificationManager manager = getSystemService(NotificationManager.class);
-            if (manager != null) {
-                manager.createNotificationChannel(channel);
-            }
+            startForeground(1, builder.build());
         }
     }
 
     @Override
-    public int onStartCommand(Intent intent, int flags, int startId) {
+    public int onStartCommand(@Nullable android.content.Intent intent, int flags, int startId) {
+        triggerAlert();
+        return START_NOT_STICKY;
+    }
 
-        // 🔥 STRONG NOTIFICATION (FIXED)
-        Notification notification = new NotificationCompat.Builder(this, CHANNEL_ID)
-                .setContentTitle("🚨 SOS ALERT")
-                .setContentText("Emergency alert is active!")
-                .setSmallIcon(android.R.drawable.ic_dialog_alert)
-                .setPriority(NotificationCompat.PRIORITY_MAX)
-                .setCategory(NotificationCompat.CATEGORY_ALARM)
-                .setOngoing(true)
-                .build();
+    private void triggerAlert() {
+        // 🔊 Start siren
+        if (!mediaPlayer.isPlaying()) mediaPlayer.start();
 
-        startForeground(1, notification);
-
-        // 🔊 Start Siren
-        if (mediaPlayer != null && !mediaPlayer.isPlaying()) {
-            mediaPlayer.start();
+        // 🔦 Turn on flash
+        try {
+            cameraManager.setTorchMode(cameraId, true);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
         }
 
-        // 🔦 Start Flash blinking
-        handler.post(flashRunnable);
+        // ⏱ Stop after 10 seconds
+        new Handler().postDelayed(this::stopAlert, 10000);
+    }
 
-        return START_STICKY;
+    private void stopAlert() {
+        if (mediaPlayer != null && mediaPlayer.isPlaying()) mediaPlayer.stop();
+        if (mediaPlayer != null) mediaPlayer.release();
+
+        try {
+            cameraManager.setTorchMode(cameraId, false);
+        } catch (CameraAccessException e) {
+            e.printStackTrace();
+        }
+
+        stopSelf();
     }
 
     @Override
     public void onDestroy() {
         super.onDestroy();
-
-        // 🔊 Stop siren
         if (mediaPlayer != null) {
-            if (mediaPlayer.isPlaying()) {
-                mediaPlayer.stop();
-            }
+            if (mediaPlayer.isPlaying()) mediaPlayer.stop();
             mediaPlayer.release();
         }
-
-        // 🔦 Stop flash
         try {
-            handler.removeCallbacks(flashRunnable);
-            if (cameraManager != null && cameraId != null) {
-                cameraManager.setTorchMode(cameraId, false);
-            }
-        } catch (Exception e) {
+            cameraManager.setTorchMode(cameraId, false);
+        } catch (CameraAccessException e) {
             e.printStackTrace();
         }
     }
 
+    @Nullable
     @Override
-    public IBinder onBind(Intent intent) {
+    public IBinder onBind(android.content.Intent intent) {
         return null;
     }
 }

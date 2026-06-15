@@ -1,110 +1,106 @@
 <?xml version="1.0" encoding="utf-8"?>
-
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    android:orientation="vertical"
+    android:background="#F5F7FA"
     android:layout_width="match_parent"
-    android:layout_height="match_parent"
-    android:background="@drawable/bg_gradient">
+    android:layout_height="match_parent">
 
-    <!-- SETTINGS ICON (TOP LEFT) -->
-    <ImageView
-        android:id="@+id/btnSettings"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_alignParentStart="true"
-        android:layout_margin="16dp"
-        android:src="@android:drawable/ic_menu_manage"
-        android:background="@drawable/profile_icon"
-        android:padding="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:elevation="10dp"/>
-
-    <!-- PROFILE ICON (TOP RIGHT) -->
-    <ImageView
-        android:id="@+id/btnProfile"
-        android:layout_width="45dp"
-        android:layout_height="45dp"
-        android:layout_alignParentEnd="true"
-        android:layout_margin="16dp"
-        android:src="@drawable/ic_profile"
-        android:background="@drawable/profile_icon"
-        android:padding="8dp"
-        android:clickable="true"
-        android:focusable="true"
-        android:elevation="10dp"/>
-
-    <!-- MAIN CONTENT -->
-    <ScrollView
+    <!-- 🔝 TOP BAR -->
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_below="@id/btnProfile"
-        android:fillViewport="true">
+        android:layout_height="60dp"
+        android:padding="12dp"
+        android:background="#FFFFFF"
+        android:gravity="center_vertical"
+        android:elevation="6dp">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <ImageView
+            android:id="@+id/btnProfile"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/profile_icon"
+            android:contentDescription="Profile Button"/>
+
+        <TextView
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
-            android:orientation="vertical"
-            android:padding="20dp">
+            android:layout_weight="1"
+            android:text="👧 Girls Safety 🚨"
+            android:textStyle="bold"
+            android:textSize="18sp"
+            android:gravity="center"
+            android:textColor="#000000"/>
 
-            <!-- TITLE -->
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="Stay Safe 💜"
-                android:textSize="24sp"
-                android:textStyle="bold"
-                android:layout_marginBottom="16dp"/>
+        <ImageView
+            android:id="@+id/btnSettings"
+            android:layout_width="36dp"
+            android:layout_height="36dp"
+            android:src="@drawable/settings_icon"
+            android:contentDescription="Settings Button"/>
+    </LinearLayout>
 
-            <!-- CONTACT INPUT -->
-            <EditText
-                android:id="@+id/etContact"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:hint="Enter Phone Number"
-                android:inputType="phone"
-                android:background="@drawable/edittext_background"
-                android:padding="12dp"/>
+    <!-- Safety Quote -->
+    <TextView
+        android:id="@+id/tvSafetyQuote"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Empower yourself, stay protected💪🛡️"
+        android:textSize="14sp"
+        android:textColor="#616161"
+        android:gravity="center"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="8dp"
+        android:fontFamily="sans-serif-medium"/>
 
-            <!-- ADD BUTTON -->
-            <Button
-                android:id="@+id/btnSaveContact"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="Add Contact"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="#6A5ACD"
-                android:textColor="#FFFFFF"/>
+    <!-- Live Tracking / Current SOS Location Button -->
+    <Button
+        android:id="@+id/btnLiveTracking"
+        android:layout_width="match_parent"
+        android:layout_height="60dp"
+        android:text="📍Current SOS Location"
+        android:textStyle="bold"
+        android:textColor="#FFFFFF"
+        android:textSize="16sp"
+        android:background="@drawable/btn_live_tracking_bg"
+        android:layout_marginStart="16dp"
+        android:layout_marginEnd="16dp"
+        android:layout_marginTop="8dp"
+        android:elevation="6dp"/>
 
-            <!-- CONTACT LIST -->
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/recyclerContacts"
-                android:layout_width="match_parent"
-                android:layout_height="200dp"
-                android:layout_marginTop="20dp"/>
+    <!-- 🗺️ MAP PREVIEW -->
+    <ImageView
+        android:id="@+id/mapPreview"
+        android:layout_width="match_parent"
+        android:layout_height="200dp"
+        android:scaleType="centerCrop"
+        android:src="@drawable/map_placeholder"
+        android:layout_margin="16dp"
+        android:background="@drawable/map_card_bg"/>
 
-            <!-- SOS BUTTON -->
-            <Button
-                android:id="@+id/btnSOS"
-                android:layout_width="match_parent"
-                android:layout_height="70dp"
-                android:text="🚨 SEND SOS"
-                android:textSize="18sp"
-                android:layout_marginTop="20dp"
-                android:backgroundTint="#D32F2F"
-                android:textColor="#FFFFFF"/>
+    <!-- 🚨 SOS BUTTON -->
+    <Button
+        android:id="@+id/btnSOS"
+        android:layout_width="match_parent"
+        android:layout_height="107dp"
+        android:layout_margin="16dp"
+        android:background="@drawable/btn_sos_bg"
+        android:text="🚨 SOS"
+        android:textColor="#FFFFFF"
+        android:textSize="20sp"
+        android:textStyle="bold" />
 
-            <!-- LIVE TRACKING -->
-            <Button
-                android:id="@+id/btnLiveTracking"
-                android:layout_width="match_parent"
-                android:layout_height="50dp"
-                android:text="📍 Live Tracking"
-                android:layout_marginTop="10dp"
-                android:backgroundTint="#2196F3"
-                android:textColor="#FFFFFF"/>
+    <!-- 📞 SAVE CONTACT BUTTON -->
+    <Button
+        android:id="@+id/btnSaveContact"
+        android:layout_width="match_parent"
+        android:layout_height="55dp"
+        android:layout_marginStart="16dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="16dp"
+        android:background="@drawable/btn_save_bg"
+        android:text="Save Trusted Contacts"
+        android:textColor="#FFFFFF"
+        android:textStyle="bold" />
 
-        </LinearLayout>
-
-    </ScrollView>
-
-</RelativeLayout>
+</LinearLayout>
