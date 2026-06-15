@@ -1,131 +1,196 @@
-# 🛡️ SafetyApp
+# 🛡️ SafetyApp – Women Safety & Emergency Assistance Application
 
-A mobile safety application designed to help users stay safe during emergencies by providing quick access to emergency features, location sharing, and instant alerts.
+## 📱 Overview
 
-## 📱 Project Overview
+SafetyApp is an Android application designed to enhance personal safety by providing quick emergency assistance features. The app enables users to send SOS alerts, notify trusted contacts, access safety awareness videos, and manage emergency settings through a simple and user-friendly interface.
 
-SafetyApp is an Android application developed as a student project to improve personal safety and emergency response. The application focuses on providing fast and easy access to emergency assistance when needed.
+This project was developed as an academic Android development project using modern Android development practices and modular architecture.
+
+---
 
 ## ✨ Features
 
-* 🚨 Emergency SOS Button
-* 📍 Real-Time Location Sharing
-* 📞 Quick Emergency Contact Access
-* 🔔 Emergency Alerts & Notifications
-* 👤 User Authentication
-* 🔒 Secure User Data Management
-* 📱 Clean and User-Friendly Interface
-* 🏗️ Feature Module Architecture
+### 🔐 Authentication
+
+* User Registration
+* User Login
+* Secure User Account Management
+
+### 🚨 Emergency SOS System
+
+* One-tap SOS activation
+* Emergency alert generation
+* Instant emergency notification system
+
+### 📩 SMS Emergency Alerts
+
+* Sends emergency SMS messages
+* Quick communication during critical situations
+
+### 👥 Trusted Contacts
+
+* Add and manage trusted contacts
+* Emergency alerts can be shared with selected contacts
+
+### 🎥 Safety Awareness Videos
+
+* Safety-related educational videos
+* Self-defense and awareness resources
+
+### 👤 User Profile
+
+* Manage personal information
+* View account details
+
+### ⚙️ Settings
+
+* Customize app preferences
+* Manage emergency configurations
+
+---
+
+## 📸 Application Screens
+
+### Splash Screen
+
+![Splash Screen](Splash Screen.JPEG)
+
+### Registration Page
+
+![Registration](Registeration Page.JPEG)
+
+### Login Page
+
+![Login](Login Page.JPEG)
+
+### Trusted Contacts
+
+![Trusted Contacts](Tusted Contact.JPEG)
+
+### SOS Alert Screen
+
+![SOS](SOS.JPEG)
+
+### Emergency SMS Screen
+
+![SMS](SMS.JPEG)
+
+### Safety Video Page
+
+![Safety Video](Safety Video Page.JPEG)
+
+### Settings Page
+
+![Settings](Setting Page.JPEG)
+
+### Profile Page
+
+![Profile](Profile Page.JPEG)
+
+---
+
+## 🏗️ Project Architecture
+
+The project follows a modular Android architecture for better maintainability and scalability.
+
+Modules may include:
+
+```text
+app/
+core/
+feature-auth/
+feature-profile/
+feature-sos/
+feature-contacts/
+feature-settings/
+feature-videos/
+```
+
+---
 
 ## 🛠️ Tech Stack
 
-### Frontend
+### Android Development
 
 * Android Studio
 * Java/Kotlin
 * XML Layouts
-* Material Design Components
+* Material Design
 
 ### Backend & Services
 
 * Firebase Authentication
-* Firebase Realtime Database / Firestore
-* Firebase Cloud Messaging (if used)
+* Firebase Database / Firestore
+* Firebase Services
 
-### Architecture
+### Version Control
 
-* Modular Architecture
-* Feature-Based Modules
-* MVVM Architecture (if used)
+* Git
+* GitHub
 
-## 📂 Project Structure
+---
 
-```text
-SafetyApp/
-├── app/
-├── core/
-├── feature-auth/
-├── feature-home/
-├── feature-emergency/
-├── feature-profile/
-├── gradle/
-└── ...
-```
+## 🚀 Installation
 
-## 🚀 Getting Started
-
-### Prerequisites
-
-* Android Studio
-* JDK 17 or later
-* Firebase Project Setup
-* Android Device or Emulator
-
-### Installation
-
-1. Clone the repository
+### Clone Repository
 
 ```bash
 git clone https://github.com/anjalikalode75/SafetyApp.git
 ```
 
-2. Open the project in Android Studio.
+### Open Project
 
-3. Sync Gradle files.
+1. Open Android Studio
+2. Select Open Project
+3. Sync Gradle Files
+4. Configure Firebase
+5. Run on Emulator or Physical Device
 
-4. Add your Firebase configuration file:
+---
 
-```text
-app/google-services.json
-```
+## 🎯 Objectives
 
-5. Run the application.
+* Improve user safety during emergencies
+* Provide quick SOS communication
+* Enable trusted contact notification
+* Increase safety awareness through educational content
 
-## 📸 Screenshots
+---
 
-### Login Screen
+## 📚 Learning Outcomes
 
-(Add Screenshot)
-
-### Home Screen
-
-(Add Screenshot)
-
-### Emergency SOS
-
-(Add Screenshot)
-
-### Profile Screen
-
-(Add Screenshot)
-
-## 🎯 Learning Outcomes
-
-Through this project, I learned:
+This project helped in learning:
 
 * Android Application Development
 * Firebase Integration
-* Authentication Systems
+* User Authentication
 * Modular Architecture
+* UI/UX Design
 * Git & GitHub Workflow
-* UI/UX Design Principles
+
+---
 
 ## 🔮 Future Enhancements
 
-* AI-Based Emergency Detection
+* Live Location Sharing
+* Real-Time Tracking
 * Voice Activated SOS
-* Nearby Police & Hospital Locator
-* Emergency Contact Synchronization
-* Offline Emergency Mode
-* Live Tracking Dashboard
+* AI-Based Threat Detection
+* Nearby Police Station Locator
+* Nearby Hospital Locator
+* Emergency Call Automation
+
+---
 
 ## 👩‍💻 Developer
 
 **Anjali Kalode**
 
-Engineering Student | Android Developer | AI & Full-Stack Enthusiast
+Engineering Student | Android Developer
 
 GitHub: https://github.com/anjalikalode75
+
+---
 
 ## 📄 License
 
