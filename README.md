@@ -52,42 +52,34 @@ This project was developed as an academic Android development project using mode
 ## 📸 Application Screens
 
 ### Splash Screen
-
-![Splash Screen](Splash Screen.JPEG)
+![Splash Screen](screenshots/Splash%20Screen.jpeg)
 
 ### Registration Page
-
-![Registration](Registeration Page.JPEG)
+![Registration](screenshots/Registration%20Page.jpeg)
 
 ### Login Page
-
-![Login](Login Page.JPEG)
+![Login](screenshots/Login%20Page.jpeg)
 
 ### Trusted Contacts
-
-![Trusted Contacts](Tusted Contact.JPEG)
+![Trusted Contacts](screenshots/Tusted%20Contact.jpeg)
 
 ### SOS Alert Screen
+![SOS](screenshots/SOS.jpeg)
 
-![SOS](SOS.JPEG)
+### SOS Received Screen
+![SOS Received](screenshots/SOS%20Recieved.jpeg)
 
 ### Emergency SMS Screen
-
-![SMS](SMS.JPEG)
+![SMS](screenshots/SMS.jpeg)
 
 ### Safety Video Page
-
-![Safety Video](Safety Video Page.JPEG)
+![Safety Video](screenshots/Safety%20Video%20Page.jpeg)
 
 ### Settings Page
-
-![Settings](Setting Page.JPEG)
+![Settings](screenshots/Setting%20Page.jpeg)
 
 ### Profile Page
-
-![Profile](Profile Page.JPEG)
-
----
+![Profile](screenshots/Profile%20Page.jpeg)
 
 ## 🏗️ Project Architecture
 
